@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="NEXUS 4 AI - Your intelligent digital assistant.">
+  <title>NEXUS 4 AI | FourKings</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b1020;
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 255px;
+      background: #101629;
+      border-right: 1px solid #263047;
+      padding: 25px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .logo-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #8b5cf6, #2563eb);
+      font-size: 23px;
+    }
+
+    .new-chat {
+      width: 100%;
+      border: 1px solid #3c4661;
+      background: #1b243a;
+      color: white;
+      padding: 13px;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .new-chat:hover {
+      background: #293451;
+    }
+
+    .side-label {
+      color: #8491ad;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+    }
+
+    .side-item {
+      padding: 12px;
+      border-radius: 10px;
+      color: #aebbd2;
+      font-size: 14px;
+    }
+
+    .side-item.active {
+      background: #202b44;
+      color: white;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      color: #8491ad;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 20px 30px;
+      border-bottom: 1px solid #263047;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    header h2 {
+      font-size: 17px;
+    }
+
+    .status {
+      color: #a7f3d0;
+      font-size: 12px;
+      background: #12352f;
+      padding: 8px 12px;
+      border-radius: 20px;
+    }
+
+    .chat {
+      flex: 1;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 35px 25px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .welcome {
+      text-align: center;
+      margin: auto 0 35px;
+    }
+
+    .welcome-icon {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 22px;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      box-shadow: 0 10px 50px #4f46e533;
+      font-size: 38px;
+    }
+
+    .welcome h1 {
+      font-size: clamp(27px, 4vw, 42px);
+      margin-bottom: 14px;
+      letter-spacing: -1.5px;
+    }
+
+    .gradient {
+      background: linear-gradient(90deg, #a78bfa, #60a5fa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .welcome p {
+      color: #98a6c1;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .suggestions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .suggestion {
+      background: #111a2d;
+      color: #e2e8f0;
+      border: 1px solid #29354d;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: left;
+      cursor: pointer;
+      line-height: 1.6;
+      transition: .2s;
+    }
+
+    .suggestion:hover {
+      border-color: #8b5cf6;
+      transform: translateY(-2px);
+    }
+
+    .suggestion strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .suggestion span {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 14px 17px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #5141a8;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.ai {
+      align-self: flex-start;
+      background: #151e32;
+      border: 1px solid #29354d;
+      border-bottom-left-radius: 4px;
+    }
+
+    .composer {
+      background: #111a2d;
+      border: 1px solid #35415a;
+      border-radius: 17px;
+      padding: 10px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .composer:focus-within {
+      border-color: #8b5cf6;
+    }
+
+    textarea {
+      flex: 1;
+      min-width: 0;
+      max-height: 150px;
+      resize: vertical;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      padding: 12px;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    textarea::placeholder {
+      color: #7f8ba5;
+    }
+
+    .send {
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #8b5cf6, #4f46e5);
+      color: white;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      font-size: 21px;
+    }
+
+    .send:hover {
+      opacity: .85;
+    }
+
+    .send:disabled {
+      opacity: .5;
+      cursor: wait;
+    }
+
+    .disclaimer {
+      text-align: center;
+      font-size: 11px;
+      color: #75819a;
+      margin-top: 13px;
+    }
+
+    @media (max-width: 650px) {
+      .sidebar {
+        display: none;
+      }
+
+      header {
+        padding: 17px;
+      }
+
+      .chat {
+        padding: 28px 15px 18px;
+      }
+
+      .suggestions {
+        grid-template-columns: 1fr;
+      }
+
+      .welcome {
+        margin-top: 35px;
+      }
+
+      .message {
+        max-width: 95%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">✦</div>
+        <span>NEXUS 4 AI</span>
+      </div>
+
+      <button class="new-chat" id="newChat">＋ New conversation</button>
+
+      <div>
+        <p class="side-label">WORKSPACE</p>
+        <div class="side-item active">✦ AI Assistant</div>
+        <div class="side-item">◷ Recent conversations</div>
+        <div class="side-item">⚙ Settings</div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <strong>FOURKINGS</strong><br>
+        Built with creativity and innovation.
+      </div>
+    </aside>
+
+    <main class="main">
+      <header>
+        <h2>✦ AI Assistant</h2>
+        <span class="status">● Ready to help</span>
+      </header>
+
+      <section class="chat">
+        <div class="welcome" id="welcome">
+          <div class="welcome-icon">✦</div>
+          <h1>Welcome to <span class="gradient">NEXUS 4 AI</span></h1>
+          <p>Your ideas, our intelligence.<br>
+            What would you like to explore today?</p>
+        </div>
+
+        <div class="suggestions" id="suggestions">
+          <button class="suggestion" data-prompt="Help me learn JavaScript step by step.">
+            <strong>⌘ Learn to code</strong>
+            <span>Explore programming and web development.</span>
+          </button>
+
+          <button class="suggestion" data-prompt="Help me improve my English speaking and writing.">
+            <strong>✎ Improve my English</strong>
+            <span>Practice English and learn new vocabulary.</span>
+          </button>
+
+          <button class="suggestion" data-prompt="Help me create a creative new project idea.">
+            <strong>✧ Get creative</strong>
+            <span>Discover ideas for your next project.</span>
+          </button>
+
+          <button class="suggestion" data-prompt="Explain artificial intelligence in simple English.">
+            <strong>◎ Explore AI</strong>
+            <span>Understand artificial intelligence.</span>
+          </button>
+        </div>
+
+        <div class="messages" id="messages" aria-live="polite"></div>
+
+        <form class="composer" id="chatForm">
+          <textarea
+            id="userInput"
+            placeholder="Message NEXUS 4 AI..."
+            rows="1"
+            aria-label="Your message"
+            required
+          ></textarea>
+          <button class="send" id="sendButton" type="submit" aria-label="Send message">↑</button>
+        </form>
+
+        <p class="disclaimer">
+          NEXUS 4 AI · FourKings Project · AI responses may need verification.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("userInput");
+    const messages = document.getElementById("messages");
+    const welcome = document.getElementById("welcome");
+    const suggestions = document.getElementById("suggestions");
+    const sendButton = document.getElementById("sendButton");
+
+    function addMessage(text, sender) {
+      const message = document.createElement("div");
+      message.className = "message " + sender;
+      message.textContent = text;
+      messages.appendChild(message);
+      return message;
+    }
+
+    async function sendMessage(text) {
+      const prompt = text.trim();
+      if (!prompt || sendButton.disabled) return;
+
+      welcome.style.display = "none";
+      suggestions.style.display = "none";
+      addMessage(prompt, "user");
+      input.value = "";
+      sendButton.disabled = true;
+
+      const reply = addMessage("Connecting to your AI assistant...", "ai");
+
+      try {
+        // This endpoint must match the API route in your server.JS.
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: prompt })
+        });
+
+        if (!response.ok) {
+          throw new Error("The AI server returned an error.");
+        }
+
+        const data = await response.json();
+        reply.textContent =
+          data.reply || data.response || data.message ||
+          "The server responded, but no reply was found.";
+      } catch (error) {
+        reply.textContent =
+          "I couldn't connect to the AI server. Please check server.JS and the API endpoint.";
+      } finally {
+        sendButton.disabled = false;
+        input.focus();
+      }
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      sendMessage(input.value);
+    });
+
+    document.querySelectorAll("[data-prompt]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        sendMessage(button.dataset.prompt);
+      });
+    });
+
+    document.getElementById("newChat").addEventListener("click", function () {
+      messages.replaceChildren();
+      welcome.style.display = "";
+      suggestions.style.display = "";
+      input.value = "";
+      input.focus();
+    });
+  </script>
+</body>
+</html>
