@@ -65,3 +65,63 @@ function addMessage(text, sender) {
     return bubble;
 }
 
+const chatInput = document.getElementById("messageInput");
+const legacySendButton = document.getElementById("sendBtn");
+const chatMessages = document.getElementById("chatMessages");
+
+async function sendMessage() {
+    const message = chatInput.value.trim();
+
+    if (!message) return;
+
+    // Display the user's message
+    const userMessage = document.createElement("p");
+    userMessage.textContent = "You: " + message;
+    chatMessages.appendChild(userMessage);
+
+    chatInput.value = "";
+    legacySendButton.disabled = true;
+
+    const loading = document.createElement("p");
+    loading.textContent = "Nova AI is thinking...";
+    chatMessages.appendChild(loading);
+
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+        loading.remove();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Request failed");
+        }
+
+        const aiMessage = document.createElement("p");
+        aiMessage.textContent = "Nova AI: " + data.reply;
+        chatMessages.appendChild(aiMessage);
+
+    } catch (error) {
+        loading.textContent =
+            "Error: " + error.message +
+            ". Check that the AI server is running.";
+    } finally {
+        legacySendButton.disabled = false;
+        chatInput.focus();
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
+
+legacySendButton.addEventListener("click", sendMessage);
+
+chatInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+});
+
